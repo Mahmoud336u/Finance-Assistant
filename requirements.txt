@@ -3,7 +3,7 @@ boto3==1.28.57
 awscli==1.29.57
 
 # Plaid API Integration
-plaid-python==12.2.0
+plaid-python==29.0.0
 requests==2.31.0
 
 # Machine Learning & SageMaker
