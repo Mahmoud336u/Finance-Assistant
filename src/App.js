@@ -1,29 +1,41 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import Dashboard from './components/Dashboard';
-import TransactionList from './components/TransactionList';
-import BudgetSuggestions from './components/BudgetSuggestions';
-import DataImport from './components/DataImport';
-import './styles/App.css';
+import axios from 'axios';
+import { getToken } from './auth';
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/transactions" component={TransactionList} />
-          <Route path="/budget" component={BudgetSuggestions} />
-          <Route path="/import" component={DataImport} />
-          <Route path="/" exact component={Login} />
-        </Switch>
-      </div>
-    </Router>
-  );
-}
+const API_URL = 'https://your-api-gateway-url.com'; // Replace with your actual API Gateway URL
 
-export default App;
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add token to every request
+api.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const getSummary = () =>
+  api.get('/summary').then((res) => res.data);
+
+export const getTransactions = () =>
+  api.get('/transactions').then((res) => res.data);
+
+export const getBudgetSuggestions = () =>
+  api.get('/budget-suggestions').then((res) => res.data);
+
+export const getCategories = () =>
+  api.get('/categories').then((res) => res.data);
+
+export const updateTransaction = (id, transaction) =>
+  api.put(`/transactions/${id}`, transaction);
+
+export const getLinkToken = () =>
+  api.get('/plaid/link-token').then((res) => res.data.link_token);
+
+export const exchangePublicToken = (publicToken) =>
+  api.post('/plaid/exchange-token', { publicToken });
