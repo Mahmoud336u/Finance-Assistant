@@ -1,34 +1,47 @@
-import React, { useState } from 'react';
-import { Container, Typography, Button, TextField } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Button } from '@mui/material';
+import { PlaidLink } from 'react-plaid-link';
+import { getLinkToken, exchangePublicToken } from '../services/api';
 
 function DataImport() {
-  const [file, setFile] = useState(null);
+  const [linkToken, setLinkToken] = useState(null);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  useEffect(() => {
+    const fetchLinkToken = async () => {
+      try {
+        const token = await getLinkToken();
+        setLinkToken(token);
+      } catch (error) {
+        console.error('Failed to fetch link token:', error);
+      }
+    };
+    fetchLinkToken();
+  }, []);
 
-  const handleUpload = () => {
-    // Logic to upload CSV file to backend (implement with FormData and API call)
-    if (file) {
-      console.log('Uploading file:', file);
-      // Example: const formData = new FormData(); formData.append('file', file); axios.post('/upload', formData);
+  const handleOnSuccess = async (publicToken, metadata) => {
+    try {
+      await exchangePublicToken(publicToken);
+      // Optionally, refresh data or show success message
+    } catch (error) {
+      console.error('Failed to exchange public token:', error);
     }
   };
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom>Data Import</Typography>
-      <Typography variant="h6">Upload CSV</Typography>
-      <TextField type="file" onChange={handleFileChange} fullWidth margin="normal" />
-      <Button variant="contained" color="primary" onClick={handleUpload}>
-        Upload
-      </Button>
-      <Typography variant="h6" style={{ marginTop: 20 }}>Connect via Plaid</Typography>
-      <Button variant="contained" color="secondary">
-        Connect Bank Account (Plaid)
-      </Button>
-      {/* Plaid integration requires the Plaid Link SDK */}
+      {linkToken && (
+        <PlaidLink
+          token={linkToken}
+          onSuccess={handleOnSuccess}
+          onExit={(err) => console.error('Plaid Link exited:', err)}
+        >
+          <Button variant="contained" color="primary">
+            Connect Bank Account
+          </Button>
+        </PlaidLink>
+      )}
+      {/* Retain existing CSV upload functionality if present */}
     </Container>
   );
 }
