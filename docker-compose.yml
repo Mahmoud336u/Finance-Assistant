@@ -6,4 +6,4 @@ services:
       - "5000:5000"
   consumer:
     build: .
-    command: python consumer.py
+    command: python script/consumer.py
