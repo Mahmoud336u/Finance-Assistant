@@ -25,11 +25,15 @@ psql -d "service=db-14742"
 
 /*
  ╔╗
+ 
 ╔╝║
 ╚╗║
+
  ║║         CONNECT TO YOUR SERVICE
-╔╝╚╦╗
+╔╝╚╦
+╗
 ╚══╩╝
+
 
  ​
 1. Install psql:
