@@ -43,7 +43,10 @@ result = connection.execute(f"SELECT * FROM financial_data WHERE user_id = '{use
 
 **Exploitation Example:**
 ```
-GET /users/' OR '1'='1/financial_data
+# Attacker sends malicious user_id in URL or request parameter
+GET /users/123' OR '1'='1'/financial_data
+# This user_id value gets interpolated into the SQL query:
+# SELECT * FROM financial_data WHERE user_id = '123' OR '1'='1'
 # Returns ALL financial data for ALL users
 ```
 
@@ -517,30 +520,30 @@ def handle_exception(e):
 ## 9. Immediate Action Items (Priority Order)
 
 ### P0 - Critical (Fix Immediately)
-1. ✅ **Fix SQL Injection** - Use parameterized queries
-2. ✅ **Rotate and Remove Exposed Credentials** - Remove .env, rotate all keys
-3. ✅ **Update Vulnerable Dependencies** - Upgrade to patched versions
-4. ✅ **Create .gitignore** - Prevent future credential exposure
+1. ⚠️ **Fix SQL Injection** - Use parameterized queries
+2. ⚠️ **Rotate and Remove Exposed Credentials** - Remove .env, rotate all keys
+3. ⚠️ **Update Vulnerable Dependencies** - Upgrade to patched versions
+4. ✅ **Create .gitignore** - Prevent future credential exposure (COMPLETED)
 
 ### P1 - High (Fix Within 1 Week)
-5. ✅ **Implement Proper Secret Management** - Use AWS Secrets Manager
-6. ✅ **Fix IAM Policies** - Implement least privilege
-7. ✅ **Add Input Validation** - Validate all user inputs
-8. ✅ **Disable Debug Mode** - Configure for production
-9. ✅ **Fix JWT Token Generation** - Add expiration, use strong secrets
+5. ⚠️ **Implement Proper Secret Management** - Use AWS Secrets Manager
+6. ⚠️ **Fix IAM Policies** - Implement least privilege
+7. ⚠️ **Add Input Validation** - Validate all user inputs
+8. ⚠️ **Disable Debug Mode** - Configure for production
+9. ⚠️ **Fix JWT Token Generation** - Add expiration, use strong secrets
 
 ### P2 - Medium (Fix Within 1 Month)
-10. ✅ **Add Security Headers** - Implement CSP, HSTS, etc.
-11. ✅ **Implement Rate Limiting** - Protect against brute force
-12. ✅ **Add Audit Logging** - Track data access
-13. ✅ **Implement Data Encryption** - Encrypt sensitive data at rest
-14. ✅ **Add CORS Configuration** - Restrict allowed origins
+10. ⚠️ **Add Security Headers** - Implement CSP, HSTS, etc.
+11. ⚠️ **Implement Rate Limiting** - Protect against brute force
+12. ⚠️ **Add Audit Logging** - Track data access
+13. ⚠️ **Implement Data Encryption** - Encrypt sensitive data at rest
+14. ⚠️ **Add CORS Configuration** - Restrict allowed origins
 
 ### P3 - Low (Fix Within 3 Months)
-15. ✅ **Improve Error Handling** - Structured logging
-16. ✅ **Add Security Tests** - Test authentication, authorization
-17. ✅ **Frontend Security** - XSS protection, CSRF tokens
-18. ✅ **CI/CD Security** - Add SAST/DAST scanning
+15. ⚠️ **Improve Error Handling** - Structured logging
+16. ⚠️ **Add Security Tests** - Test authentication, authorization
+17. ⚠️ **Frontend Security** - XSS protection, CSRF tokens
+18. ⚠️ **CI/CD Security** - Add SAST/DAST scanning
 
 ---
 

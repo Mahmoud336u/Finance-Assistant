@@ -71,8 +71,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
-yarn.lock
+# Note: package-lock.json and yarn.lock should be committed for reproducible builds
+# Only uncommit if you have a specific reason (e.g., library development)
 
 # Build artifacts
 *.zip
@@ -115,4 +115,3 @@ credentials/
 # Backup files
 *.bak
 *.backup
-*~

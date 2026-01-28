@@ -83,9 +83,12 @@ result = connection.execute(
 SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-secret-key')
 
 # SECURE: No default, fail if not set
-SECRET_KEY = os.environ['JWT_SECRET_KEY']  # Will raise error if not set
-if len(SECRET_KEY) < 32:
-    raise ValueError("JWT_SECRET_KEY must be at least 32 characters")
+try:
+    SECRET_KEY = os.environ['JWT_SECRET_KEY']  # Will raise KeyError if not set
+    if len(SECRET_KEY) < 32:
+        raise ValueError("JWT_SECRET_KEY must be at least 32 characters")
+except KeyError:
+    raise ValueError("JWT_SECRET_KEY environment variable must be set")
 ```
 
 ### 5. Overly Permissive IAM Policies (HIGH)
