@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goethe B2 — 8-Week Elite Preparation System</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --bg2: #141720;
+    --bg3: #1c202e;
+    --surface: #20253a;
+    --surface2: #272d42;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --text2: #9aa0b8;
+    --text3: #5c6280;
+    --accent: #6c8fff;
+    --accent2: #4a6ee0;
+    --gold: #e8b84b;
+    --gold2: #c49a2a;
+    --green: #3dd68c;
+    --red: #f2655a;
+    --orange: #f5924e;
+    --purple: #a78bfa;
+    --teal: #38d9b9;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.7; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(13,15,20,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0; overflow-x: auto; }
+  nav a { display: inline-block; padding: 1rem 0.85rem; font-size: 13px; color: var(--text2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  nav a:hover, nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+  nav .brand { font-weight: 700; color: var(--gold); font-size: 14px; padding-right: 1.5rem; border-right: 1px solid var(--border); margin-right: 0.5rem; white-space: nowrap; }
+
+  /* HERO */
+  .hero { padding: 4rem 2rem 3rem; max-width: 900px; margin: 0 auto; }
+  .hero h1 { font-size: clamp(28px,5vw,48px); font-weight: 800; line-height: 1.2; letter-spacing: -1px; }
+  .hero h1 span { color: var(--gold); }
+  .hero p { margin-top: 1rem; color: var(--text2); font-size: 17px; max-width: 600px; }
+  .hero-meta { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+  .meta-chip { background: var(--surface); border: 1px solid var(--border2); border-radius: 100px; padding: 6px 16px; font-size: 13px; color: var(--text2); }
+  .meta-chip strong { color: var(--text); }
+
+  /* SECTIONS */
+  section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; border-top: 1px solid var(--border); }
+  h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+  h2 .tag { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 6px; }
+  h3 { font-size: 17px; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
+  p { color: var(--text2); margin-bottom: 0.75rem; }
+  strong { color: var(--text); font-weight: 600; }
+  code { background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; font-family: 'Cascadia Code', monospace; font-size: 13px; color: var(--teal); }
+
+  /* WEEK CARDS */
+  .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .week-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; transition: border-color 0.2s, transform 0.2s; cursor: default; }
+  .week-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .week-card .week-num { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .week-card h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .week-card .phase-badge { display: inline-block; background: var(--bg3); border: 1px solid var(--border2); border-radius: 100px; padding: 3px 10px; font-size: 11px; color: var(--text2); margin-bottom: 10px; }
+  .week-card ul { list-style: none; padding: 0; }
+  .week-card ul li { font-size: 13px; color: var(--text2); padding: 3px 0 3px 16px; position: relative; border-bottom: 1px solid var(--border); }
+  .week-card ul li:last-child { border-bottom: none; }
+  .week-card ul li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .week-card .focus-bar { height: 3px; border-radius: 2px; margin-top: 12px; background: linear-gradient(90deg, var(--accent) 0%, var(--purple) 100%); }
+  .week-card.phase1 .focus-bar { background: linear-gradient(90deg, var(--teal), var(--green)); }
+  .week-card.phase2 .focus-bar { background: linear-gradient(90deg, var(--accent), var(--purple)); }
+  .week-card.phase3 .focus-bar { background: linear-gradient(90deg, var(--gold), var(--orange)); }
+  .week-card.phase4 .focus-bar { background: linear-gradient(90deg, var(--red), var(--orange)); }
+
+  /* DAILY SCHEDULE */
+  .day-template { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-top: 1.5rem; }
+  .day-header { background: var(--surface2); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+  .day-header h3 { margin: 0; font-size: 15px; }
+  .time-row { display: grid; grid-template-columns: 110px 1fr 100px; gap: 0; border-bottom: 1px solid var(--border); }
+  .time-row:last-child { border-bottom: none; }
+  .time-row > div { padding: 10px 1.25rem; font-size: 13px; }
+  .time-cell { color: var(--text3); font-family: monospace; font-size: 12px; border-right: 1px solid var(--border); background: var(--bg3); display: flex; align-items: center; }
+  .task-cell { color: var(--text2); display: flex; flex-direction: column; justify-content: center; }
+  .task-cell strong { color: var(--text); font-size: 13px; margin-bottom: 2px; }
+  .task-cell span { font-size: 12px; color: var(--text3); }
+  .badge-cell { display: flex; align-items: center; justify-content: center; }
+  .skill-badge { border-radius: 100px; padding: 3px 10px; font-size: 11px; font-weight: 600; text-align: center; }
+  .sb-speak { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .sb-write { background: rgba(248,146,78,0.15); color: var(--orange); border: 1px solid rgba(248,146,78,0.3); }
+  .sb-read { background: rgba(61,214,140,0.15); color: var(--green); border: 1px solid rgba(61,214,140,0.3); }
+  .sb-listen { background: rgba(56,217,185,0.15); color: var(--teal); border: 1px solid rgba(56,217,185,0.3); }
+  .sb-grammar { background: rgba(108,143,255,0.15); color: var(--accent); border: 1px solid rgba(108,143,255,0.3); }
+  .sb-vocab { background: rgba(232,184,75,0.15); color: var(--gold); border: 1px solid rgba(232,184,75,0.3); }
+  .sb-review { background: rgba(92,98,128,0.15); color: var(--text3); border: 1px solid var(--border); }
+  .sb-mock { background: rgba(242,101,90,0.15); color: var(--red); border: 1px solid rgba(242,101,90,0.3); }
+  .pomodoro-tag { font-size: 10px; color: var(--text3); padding: 2px 6px; background: var(--bg3); border-radius: 4px; margin-left: 6px; }
+
+  /* DRILLS */
+  .drill-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 0.75rem; }
+  .drill-card .drill-type { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
+  .drill-card h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .drill-card p { font-size: 13px; color: var(--text2); margin: 0; }
+  .drill-steps { list-style: none; padding: 0; margin-top: 10px; counter-reset: step; }
+  .drill-steps li { counter-increment: step; padding: 6px 0 6px 28px; position: relative; font-size: 13px; color: var(--text2); border-bottom: 1px solid var(--border); }
+  .drill-steps li:last-child { border-bottom: none; }
+  .drill-steps li::before { content: counter(step); position: absolute; left: 0; top: 7px; width: 20px; height: 20px; background: var(--surface2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); text-align: center; line-height: 20px; }
+
+  /* TABLES */
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+  .data-table th { text-align: left; padding: 10px 14px; background: var(--surface2); color: var(--text2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+  .data-table tr:hover td { background: var(--surface); }
+  .data-table tr:last-child td { border-bottom: none; }
+
+  /* CALLOUTS */
+  .callout { border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1rem 0; font-size: 14px; }
+  .callout-warning { background: rgba(232,184,75,0.08); border: 1px solid rgba(232,184,75,0.25); border-left: 3px solid var(--gold); color: var(--text2); }
+  .callout-critical { background: rgba(242,101,90,0.08); border: 1px solid rgba(242,101,90,0.25); border-left: 3px solid var(--red); color: var(--text2); }
+  .callout-info { background: rgba(108,143,255,0.08); border: 1px solid rgba(108,143,255,0.25); border-left: 3px solid var(--accent); color: var(--text2); }
+  .callout-success { background: rgba(61,214,140,0.08); border: 1px solid rgba(61,214,140,0.25); border-left: 3px solid var(--green); color: var(--text2); }
+  .callout strong { color: var(--text); }
+
+  /* PROGRESS / TRACKING */
+  .checkpoint-row { display: flex; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .checkpoint-item { flex: 1 1 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .checkpoint-item .ci-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .checkpoint-item .ci-metric { font-size: 22px; font-weight: 700; color: var(--text); }
+  .checkpoint-item .ci-target { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .error-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+  .error-cell { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .error-cell h5 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .error-cell ul { list-style: none; padding: 0; }
+  .error-cell ul li { font-size: 12px; color: var(--text2); padding: 3px 0 3px 12px; position: relative; }
+  .error-cell ul li::before { content: '·'; position: absolute; left: 0; color: var(--accent); }
+
+  /* RESOURCES */
+  .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .resource-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .resource-card .rc-type { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .rc-type.core { color: var(--gold); }
+  .rc-type.speaking { color: var(--purple); }
+  .rc-type.listening { color: var(--teal); }
+  .rc-type.exam { color: var(--red); }
+  .rc-type.grammar { color: var(--accent); }
+  .rc-type.vocab { color: var(--green); }
+  .resource-card h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .resource-card p { font-size: 12px; color: var(--text2); margin: 0; }
+  .resource-card .rc-action { font-size: 11px; color: var(--accent); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+  /* FOOTER */
+  footer { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; border-top: 1px solid var(--border); text-align: center; color: var(--text3); font-size: 13px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    nav a { padding: 0.75rem 0.6rem; font-size: 12px; }
+    .time-row { grid-template-columns: 80px 1fr; }
+    .badge-cell { display: none; }
+    .error-matrix { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">GZ B2 SYSTEM</span>
+  <a href="#roadmap" class="active">Roadmap</a>
+  <a href="#daily">Daily Plan</a>
+  <a href="#speaking">Speaking</a>
+  <a href="#writing">Writing</a>
+  <a href="#listening">Listening</a>
+  <a href="#reading">Reading</a>
+  <a href="#grammar">Grammar</a>
+  <a href="#resources">Resources</a>
+  <a href="#mock">Mock Exams</a>
+  <a href="#tracking">Tracking</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Goethe-Zertifikat B2<br><span>Elite 8-Week System</span></h1>
+  <p>Complete preparation framework. Not just to pass — to dominate. Built for A2/B1 → strong B2 in 60 days.</p>
+  <div class="hero-meta">
+    <div class="meta-chip">Native: <strong>Arabic</strong></div>
+    <div class="meta-chip">Daily: <strong>8–12h (4h Fridays)</strong></div>
+    <div class="meta-chip">Priority: <strong>Speaking</strong></div>
+    <div class="meta-chip">Method: <strong>Pomodoro</strong></div>
+    <div class="meta-chip">Timeline: <strong>60 days</strong></div>
+  </div>
+</div>
+
+<!-- ========== SECTION 1: ROADMAP ========== -->
+<section id="roadmap">
+  <h2><span class="tag">Section 01</span>8-Week Weekly Roadmap</h2>
+  <p>Four phases. Each phase has a non-negotiable focus. Skills compound — do not skip phases.</p>
+
+  <div class="callout callout-critical">
+    <strong>Phase Logic:</strong> Weeks 1–2 = Language Infrastructure. Weeks 3–4 = Skill Separation. Weeks 5–6 = Exam Mechanics. Weeks 7–8 = Simulation & Sharpening. Every week has a daily speaking minimum.
+  </div>
+
+  <div class="week-grid">
+    <div class="week-card phase1">
+      <div class="week-num">Week 01</div>
+      <h4>Diagnostic & Foundation Reset</h4>
+      <span class="phase-badge">Phase 1 — Infrastructure</span>
+      <ul>
+        <li>Complete Goethe B2 Modellsatz 1 (full, timed) — establish baseline</li>
+        <li>Error analysis → build personal Grammar Error Log</li>
+        <li>Start Schritte Plus Neu B1 → B2 gap chapters</li>
+        <li>Daily 30-min structured speaking: monologue topics only</li>
+        <li>Activate Anki: 30 new B2 words/day, sentence-based</li>
+        <li>Listening: Easy German + transcription drill (1 video/day)</li>
+        <li>Grammar focus: Konjunktiv II, Passiv variations</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase1">
+      <div class="week-num">Week 02</div>
+      <h4>Grammar Blitz + Speaking Foundation</h4>
+      <span class="phase-badge">Phase 1 — Infrastructure</span>
+      <ul>
+        <li>Grammatik Aktiv B1→B2 chapters: Relativsätze, indirekte Rede</li>
+        <li>Speaking: 3×45 min partner sessions (C1 partner) — structured tasks</li>
+        <li>Writing: First formal letter draft using B2 template</li>
+        <li>Lesen: Daily 1 Goethe-style text with timed comprehension</li>
+        <li>Hören: DW audio news (6 min) — summarize in German (written)</li>
+        <li>Grammar focus: Modalpartikeln, complex Satzgefüge</li>
+        <li>Introduce shadowing with Deutsche Welle reports</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase2">
+      <div class="week-num">Week 03</div>
+      <h4>Exam Structure Internalization</h4>
+      <span class="phase-badge">Phase 2 — Skill Separation</span>
+      <ul>
+        <li>Deep-dive Lesen: all 4 task types (Match, Global, Detail, Multiple choice)</li>
+        <li>Hören: Goethe task types — Interview, Radio, Presentation formats</li>
+        <li>Speaking: Begin argumentation drills — Pro/Contra on assigned topics</li>
+        <li>Writing: Opinion essay 250 words — timed 65 minutes</li>
+        <li>Grammar: Kausale/konzessive/finale Konnektoren (exam-critical)</li>
+        <li>Second Modellsatz (partial: Lesen + Hören only)</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase2">
+      <div class="week-num">Week 04</div>
+      <h4>Writing + Speaking Integration</h4>
+      <span class="phase-badge">Phase 2 — Skill Separation</span>
+      <ul>
+        <li>Writing system: 3 full Schreiben tasks with self-correction protocol</li>
+        <li>Speaking: Introduce Redemittel cards — argumentation phrases</li>
+        <li>Partner sessions: simulate Sprechen Teil 1 (Präsentation)</li>
+        <li>Lesen: timed under exam conditions (75 min for all 4 parts)</li>
+        <li>Grammar: Nomen-Verb-Verbindungen, register shift formal/informal</li>
+        <li>Checkpoint: Grammar Error Log review — patterns identified</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase3">
+      <div class="week-num">Week 05</div>
+      <h4>Full Exam Mechanics</h4>
+      <span class="phase-badge">Phase 3 — Exam Mechanics</span>
+      <ul>
+        <li>First full timed mock: Lesen + Hören + Schreiben (no Sprechen)</li>
+        <li>Speaking: Full simulation of Sprechen Teil 1 + Teil 2 (15 min)</li>
+        <li>Deep error analysis from mock — update error logs</li>
+        <li>Vocabulary: transition from Anki to context chunks (newspapers)</li>
+        <li>Writing: formal vs. semi-formal register precision practice</li>
+        <li>Listening: 2× native-speed content daily (ARD Audiothek, Deutschlandfunk)</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase3">
+      <div class="week-num">Week 06</div>
+      <h4>Weakness Elimination</h4>
+      <span class="phase-badge">Phase 3 — Exam Mechanics</span>
+      <ul>
+        <li>Identify 2 weakest task types from Week 5 mock — drill daily</li>
+        <li>Speaking: 90-min partner session — full Sprechen simulation ×3</li>
+        <li>Writing: Second full mock Schreiben under timed conditions</li>
+        <li>Hören: focus on fastest, densest audio (Radiobericht format)</li>
+        <li>Grammar: Final gaps from Error Log — targeted 45-min sessions</li>
+        <li>Reading speed drill: 500-word texts in under 8 minutes</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase4">
+      <div class="week-num">Week 07</div>
+      <h4>Full Simulation Mode</h4>
+      <span class="phase-badge">Phase 4 — Sharpening</span>
+      <ul>
+        <li>Full 4-skill mock exam under exact Goethe conditions (Days 1 and 5)</li>
+        <li>Speaking: Record all sessions — self-analysis against B2 descriptors</li>
+        <li>Deep error analysis sessions (2 hrs post-mock)</li>
+        <li>Zero new grammar — consolidation only</li>
+        <li>Vocabulary: active usage only — write 5 sentences per new word</li>
+        <li>Confidence drills: speak on surprise topics (2-min unprepared monologue)</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+
+    <div class="week-card phase4">
+      <div class="week-num">Week 08</div>
+      <h4>Pre-Exam Sharpening</h4>
+      <span class="phase-badge">Phase 4 — Sharpening</span>
+      <ul>
+        <li>Final mock (Day 1 of week) — treat as real exam</li>
+        <li>Days 2–4: targeted repair of final mock errors only</li>
+        <li>Day 5: complete rest from new content — review Redemittel + connectors</li>
+        <li>Day 6: exam-day simulation (timing, logistics, mindset)</li>
+        <li>Speaking: 1 final full partner simulation, then freeze</li>
+        <li>Day 7: light review only — no intensive study</li>
+      </ul>
+      <div class="focus-bar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SECTION 2: DAILY PLAN ========== -->
+<section id="daily">
+  <h2><span class="tag">Section 02</span>Daily Execution Template</h2>
+  <p>Two templates: Standard Day (8–12h) and Friday (4h). Every block is Pomodoro-structured.</p>
+
+  <div class="callout callout-info">
+    <strong>Pomodoro Key:</strong> Grammar/Vocab = 25/5 (high cognitive load, needs resets). Listening/Reading = 45/15 (flow state). Speaking/Writing = 90/30 (requires deep immersion). Never mix skill categories within a block.
+  </div>
+
+  <h3>Standard Day — 8 Hours Core (Mon/Tue/Wed/Thu/Sat/Sun)</h3>
+  <div class="day-template">
+    <div class="day-header"><h3>Standard Day Template</h3><span style="font-size:12px;color:var(--text3);">Adjust start time. Protect sequence.</span></div>
+    <div class="time-row"><div class="time-cell">06:00–07:30</div><div class="task-cell"><strong>Speaking — Solo Drills</strong><span>Monologue × 3 topics (5 min each) · Record & replay 1 · Pronunciation shadowing 20 min</span></div><div class="badge-cell"><span class="skill-badge sb-speak">Sprechen</span></div></div>
+    <div class="time-row"><div class="time-cell">07:30–07:45</div><div class="task-cell"><strong>Break + Review</strong><span>Review yesterday's Anki due cards only</span></div><div class="badge-cell"><span class="skill-badge sb-review">Break</span></div></div>
+    <div class="time-row"><div class="time-cell">07:45–09:15</div><div class="task-cell"><strong>Grammar — Grammatik Aktiv</strong><span>2× 25-min Pomodoros · 1 grammar point per session · Produce 10 example sentences · Log errors</span></div><div class="badge-cell"><span class="skill-badge sb-grammar">Grammatik</span></div></div>
+    <div class="time-row"><div class="time-cell">09:15–09:30</div><div class="task-cell"><strong>Vocab Input</strong><span>Add 15 new Anki cards (sentence-context only) · 5-min review</span></div><div class="badge-cell"><span class="skill-badge sb-vocab">Wortschatz</span></div></div>
+    <div class="time-row"><div class="time-cell">09:30–11:00</div><div class="task-cell"><strong>Lesen — Exam Tasks</strong><span>45/15 blocks · Task 1: Skim/match (15 min) · Task 2–4: timed under exam conditions · No dictionary</span></div><div class="badge-cell"><span class="skill-badge sb-read">Lesen</span></div></div>
+    <div class="time-row"><div class="time-cell">11:00–12:00</div><div class="task-cell"><strong>Lunch Break</strong><span>Passive input only: German podcast while eating (no active study)</span></div><div class="badge-cell"><span class="skill-badge sb-review">Break</span></div></div>
+    <div class="time-row"><div class="time-cell">12:00–13:30</div><div class="task-cell"><strong>Hören — Active Listening</strong><span>45/15 · Block 1: Goethe task type drill · Block 2: Transcription or summarization exercise</span></div><div class="badge-cell"><span class="skill-badge sb-listen">Hören</span></div></div>
+    <div class="time-row"><div class="time-cell">13:30–15:00</div><div class="task-cell"><strong>Schreiben — Structured Task</strong><span>90-min block · Full email or essay (formal/semi-formal) · Apply correction protocol after</span></div><div class="badge-cell"><span class="skill-badge sb-write">Schreiben</span></div></div>
+    <div class="time-row"><div class="time-cell">15:00–15:30</div><div class="task-cell"><strong>Break</strong><span>Walk. No German. Mandatory cognitive reset.</span></div><div class="badge-cell"><span class="skill-badge sb-review">Break</span></div></div>
+    <div class="time-row"><div class="time-cell">15:30–17:00</div><div class="task-cell"><strong>Speaking — Partner Session</strong><span>3× / week with C1 partner. Other days: solo argumentation drill or Tandem app. Structured tasks only (see Speaking System).</span></div><div class="badge-cell"><span class="skill-badge sb-speak">Sprechen</span></div></div>
+    <div class="time-row"><div class="time-cell">17:00–18:00</div><div class="task-cell"><strong>Vocab + Error Log Review</strong><span>25/5 × 2 · Anki review (due cards) · Review Grammar Error Log · Add today's errors</span></div><div class="badge-cell"><span class="skill-badge sb-vocab">Wortschatz</span></div></div>
+    <div class="time-row"><div class="time-cell">18:00–19:30</div><div class="task-cell"><strong>Immersion Block</strong><span>Native-speed content: ARD Mediathek, ZDF, Deutschlandfunk — NO subtitles. Passive to active transition.</span></div><div class="badge-cell"><span class="skill-badge sb-listen">Hören</span></div></div>
+    <div class="time-row"><div class="time-cell">19:30–20:00</div><div class="task-cell"><strong>Daily Debrief</strong><span>5 min: write in German what you learned today (100 words). Update error log. Set tomorrow's priorities.</span></div><div class="badge-cell"><span class="skill-badge sb-write">Schreiben</span></div></div>
+  </div>
+
+  <h3 style="margin-top:2rem;">Friday — 4 Hours Only (High-Intensity, No Wasted Minutes)</h3>
+  <div class="day-template">
+    <div class="day-header"><h3>Friday Template</h3><span style="font-size:12px;color:var(--text3);">Every minute is exam-relevant.</span></div>
+    <div class="time-row"><div class="time-cell">09:00–10:30</div><div class="task-cell"><strong>Speaking — Intensive Partner or Mock</strong><span>Full Sprechen simulation (Teil 1+2) OR 3 structured argumentation drills. Record everything.</span></div><div class="badge-cell"><span class="skill-badge sb-speak">Sprechen</span></div></div>
+    <div class="time-row"><div class="time-cell">10:30–11:30</div><div class="task-cell"><strong>Schreiben — Timed Full Task</strong><span>65 minutes, no pause. Formal email or opinion essay. Immediate self-correction after (20 min).</span></div><div class="badge-cell"><span class="skill-badge sb-write">Schreiben</span></div></div>
+    <div class="time-row"><div class="time-cell">11:30–12:30</div><div class="task-cell"><strong>Grammar + Error Log Review</strong><span>Most recent 3 days' error log. Target 1–2 grammar patterns. Drill 10 sentences per pattern.</span></div><div class="badge-cell"><span class="skill-badge sb-grammar">Grammatik</span></div></div>
+    <div class="time-row"><div class="time-cell">12:30–13:00</div><div class="task-cell"><strong>Vocab Consolidation</strong><span>Anki due cards + review week's new vocabulary in context. Write 1 paragraph using 5 new words.</span></div><div class="badge-cell"><span class="skill-badge sb-vocab">Wortschatz</span></div></div>
+  </div>
+
+  <h3 style="margin-top:2rem;">Mock Exam Days (Weeks 5, 7, 8)</h3>
+  <div class="day-template">
+    <div class="day-header"><h3>Mock Exam Day</h3><span style="font-size:12px;color:var(--text3);">Goethe exact conditions. No compromises.</span></div>
+    <div class="time-row"><div class="time-cell">08:00–09:15</div><div class="task-cell"><strong>Lesen — 75 min</strong><span>All 4 parts. No dictionary. Strict timing. Mark unsure answers.</span></div><div class="badge-cell"><span class="skill-badge sb-read">Lesen</span></div></div>
+    <div class="time-row"><div class="time-cell">09:30–10:15</div><div class="task-cell"><strong>Hören — 40 min + transfer</strong><span>3 parts. Listen only while reading questions first.</span></div><div class="badge-cell"><span class="skill-badge sb-listen">Hören</span></div></div>
+    <div class="time-row"><div class="time-cell">10:30–12:10</div><div class="task-cell"><strong>Schreiben — 90 min</strong><span>Task 1: formal email (25–30 min). Task 2: opinion essay (50–60 min). Budget 5 min review.</span></div><div class="badge-cell"><span class="skill-badge sb-mock">Mock</span></div></div>
+    <div class="time-row"><div class="time-cell">12:10–14:00</div><div class="task-cell"><strong>Break</strong><span>Mandatory. Eat. Walk. No German.</span></div><div class="badge-cell"><span class="skill-badge sb-review">Break</span></div></div>
+    <div class="time-row"><div class="time-cell">14:00–14:20</div><div class="task-cell"><strong>Sprechen — 20 min</strong><span>Full simulation with C1 partner: 5 min prep + 15 min performance (Teil 1 + Teil 2).</span></div><div class="badge-cell"><span class="skill-badge sb-speak">Sprechen</span></div></div>
+    <div class="time-row"><div class="time-cell">15:00–17:00</div><div class="task-cell"><strong>Deep Error Analysis</strong><span>See Mock Exam Strategy section. 2-hr structured debrief. No rushing this.</span></div><div class="badge-cell"><span class="skill-badge sb-mock">Analyse</span></div></div>
+  </div>
+</section>
+
+<!-- ========== SECTION 3: SPEAKING ========== -->
+<section id="speaking">
+  <h2><span class="tag">Section 03</span>Speaking Training System</h2>
+  <p>Your biggest risk. Most Arabic-speaking B2 candidates fail or underperform here. This system attacks the problem with surgical precision.</p>
+
+  <div class="callout callout-critical">
+    <strong>Goethe B2 Sprechen Structure:</strong> Teil 1 — Präsentation (5 min prepared monologue from a given prompt). Teil 2 — Diskussion (10 min paired discussion, argument + response + negotiation). Evaluated on: Kohärenz, Wortschatz, Grammatik, Aussprache, Interaktion.
+  </div>
+
+  <h3>Solo Drills (Daily — Every Day Without Exception)</h3>
+
+  <div class="drill-card">
+    <div class="drill-type">Drill A — Monologue Structuring</div>
+    <h4>Timed Topic Monologue</h4>
+    <p>Select any B2-level topic (see list below). Prepare 1 minute. Speak for 4–5 minutes uninterrupted. Record audio.</p>
+    <ol class="drill-steps">
+      <li>Draw 1 topic card (use random B2 topic list: Umwelt, Digitalisierung, Bildung, Arbeit, Familie, Gesundheit, Globalisierung, Mobilität)</li>
+      <li>Write a 3-point outline in 60 seconds — no full sentences</li>
+      <li>Speak 4–5 minutes using structure: Einleitung → Argument 1 + Beispiel → Argument 2 + Gegenargument → Fazit</li>
+      <li>Record. Listen back. Note: filler words (äh, also, ja), incomplete sentences, repetition</li>
+      <li>Redo the SAME topic immediately — implement corrections</li>
+    </ol>
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Drill B — Argumentation Chains</div>
+    <h4>Position Defence + Rebuttal</h4>
+    <p>Builds the skill of holding a position under pressure — critical for Teil 2.</p>
+    <ol class="drill-steps">
+      <li>State a position: "Ich bin der Meinung, dass..."</li>
+      <li>Give 3 supporting arguments with connectors: "Erstens..., Darüber hinaus..., Schließlich..."</li>
+      <li>Generate the strongest counterargument yourself: "Man könnte einwenden, dass..."</li>
+      <li>Rebut it: "Dennoch/Trotzdem ist zu beachten, dass..."</li>
+      <li>Close with a nuanced conclusion: "Alles in allem lässt sich sagen, dass..."</li>
+      <li>Time target: under 3 minutes total</li>
+    </ol>
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Drill C — Cold Start Speaking</div>
+    <h4>Unprepared Topic Response (Weeks 6–8)</h4>
+    <p>Eliminates preparation dependency. Simulates real exam pressure.</p>
+    <ol class="drill-steps">
+      <li>Set timer for 30 seconds — someone (or you randomly) gives a topic</li>
+      <li>Start speaking immediately at 30 seconds — no notes</li>
+      <li>Speak for minimum 2 minutes</li>
+      <li>Rate yourself: Did you stop? Did you fill silence with German (not Arabic)? Did you use connectors?</li>
+      <li>Do 3 rounds per session</li>
+    </ol>
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Drill D — Shadowing Protocol</div>
+    <h4>Accent + Rhythm Calibration</h4>
+    <p>Arabic phonology interferes with German pronunciation. Daily shadow work repairs this.</p>
+    <ol class="drill-steps">
+      <li>Select 90-second clip from Deutschlandfunk or ZDF news (clear, standard German)</li>
+      <li>Listen once — focus on rhythm and intonation, not words</li>
+      <li>Listen + read transcript simultaneously</li>
+      <li>Shadow: play audio, speak simultaneously 0.5 seconds behind the speaker</li>
+      <li>Record your shadow. Compare to original. Target sounds: ü, ö, ä, ch (Bach vs. ich), r-sound</li>
+      <li>20 minutes maximum. Quality over quantity.</li>
+    </ol>
+  </div>
+
+  <h3>Partner Sessions (3× per Week with C1 Partner)</h3>
+
+  <table class="data-table">
+    <thead><tr><th>Session</th><th>Format</th><th>Partner Role</th><th>Feedback Focus</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Session 1</strong></td><td>Sprechen Teil 1 simulation × 2 (different topics)</td><td>Examiner: listen, do NOT interrupt, note errors</td><td>Structure, completeness, connectors used</td></tr>
+      <tr><td><strong>Session 2</strong></td><td>Sprechen Teil 2: Partner takes opposing position</td><td>Active discussion: challenge, ask for clarification ("Was meinen Sie damit genau?")</td><td>Reaction speed, argumentation quality, interaction markers</td></tr>
+      <tr><td><strong>Session 3</strong></td><td>Full 15-min Sprechen simulation (Teil 1 + 2)</td><td>Strict examiner mode: time it, no help</td><td>Full rubric scoring (see below)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Feedback Loop System</h3>
+  <div class="callout callout-success">
+    <strong>Partner Feedback Protocol:</strong> Partner uses the Goethe B2 Sprechen rubric dimensions: (1) Aufgabenerfüllung/Inhalt, (2) Kohärenz/Flüssigkeit, (3) Wortschatz, (4) Grammatik, (5) Aussprache. Rate each 1–5 after every session. Track in a spreadsheet. Any dimension below 3 = drill priority for next session.
+  </div>
+
+  <h3>Redemittel Activation (Mandatory — Use in Every Session)</h3>
+  <p>These are the exact phrases that distinguish B1 from B2 performance. Memorize by category, not as a list.</p>
+
+  <table class="data-table">
+    <thead><tr><th>Function</th><th>Redemittel</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Opening</strong></td><td>Ich möchte heute über ... sprechen. / Mein Thema ist ... und ich werde dabei folgende Punkte ansprechen.</td></tr>
+      <tr><td><strong>Stating opinion</strong></td><td>Meiner Meinung/Ansicht nach ... / Ich bin (fest) davon überzeugt, dass ... / Ich halte ... für ...</td></tr>
+      <tr><td><strong>Adding argument</strong></td><td>Darüber hinaus / Hinzu kommt, dass ... / Ein weiterer Aspekt ist ...</td></tr>
+      <tr><td><strong>Conceding</strong></td><td>Zwar ... , aber ... / Obwohl ... , ist dennoch zu beachten, dass ... / Ich sehe den Punkt, jedoch ...</td></tr>
+      <tr><td><strong>Disagreeing</strong></td><td>Da bin ich anderer Meinung. / Das sehe ich etwas anders. / Ich möchte dem widersprechen, weil ...</td></tr>
+      <tr><td><strong>Asking for opinion</strong></td><td>Was denken/meinen Sie dazu? / Wie stehen Sie zu dieser Frage?</td></tr>
+      <tr><td><strong>Summarizing</strong></td><td>Zusammenfassend lässt sich sagen, dass ... / Alles in allem bin ich der Meinung, dass ...</td></tr>
+      <tr><td><strong>Buying time</strong></td><td>Das ist eine interessante Frage. / Lassen Sie mich kurz nachdenken. / Ich würde sagen, dass ...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== SECTION 4: WRITING ========== -->
+<section id="writing">
+  <h2><span class="tag">Section 04</span>Writing System</h2>
+  <p>Goethe B2 Schreiben: 2 tasks in 90 minutes. Task 1: formal/semi-formal email or letter (~100 words). Task 2: opinion essay/comment (~200 words). Both have strict rubric criteria.</p>
+
+  <div class="callout callout-info">
+    <strong>B2 Schreiben Rubric:</strong> (1) Inhalt — all task points addressed, (2) Kommunikative Gestaltung — reader-oriented structure, (3) Formale Richtigkeit — grammar + spelling accuracy. Each is weighted. Inhalt is most penalized if incomplete.
+  </div>
+
+  <h3>Task 1 — Formal/Semi-Formal Email/Letter</h3>
+  <div class="drill-card">
+    <div class="drill-type">Template Framework</div>
+    <h4>Structure every Task 1 identically — do not improvise structure</h4>
+    <ol class="drill-steps">
+      <li><strong>Anrede:</strong> Sehr geehrte/r Frau/Herr [Name] (formal) OR Liebe/r [Name] (semi-formal)</li>
+      <li><strong>Opening sentence:</strong> Reference the prompt directly — "Ich schreibe Ihnen bezüglich..."</li>
+      <li><strong>Body:</strong> Address ALL bullet points from task — one sentence minimum per point</li>
+      <li><strong>Closing request/action:</strong> "Ich würde mich freuen, von Ihnen zu hören / Ich bitte Sie, ..."</li>
+      <li><strong>Gruß:</strong> Mit freundlichen Grüßen (formal) / Viele Grüße (semi-formal)</li>
+    </ol>
+  </div>
+
+  <h3>Task 2 — Opinion Essay / Leserkommentar</h3>
+  <div class="drill-card">
+    <div class="drill-type">Essay Structure (Non-Negotiable)</div>
+    <h4>5-Paragraph B2 Essay Architecture</h4>
+    <ol class="drill-steps">
+      <li><strong>Einleitung (2–3 sentences):</strong> State the topic. Indicate why it's relevant. DO NOT state your opinion yet.</li>
+      <li><strong>Pro-Argument (3–4 sentences):</strong> Best argument FOR the position + specific example or statistic (real or plausible)</li>
+      <li><strong>Contra-Argument (3–4 sentences):</strong> Strongest counterargument + concession phrase</li>
+      <li><strong>Eigene Meinung (2–3 sentences):</strong> Clear personal stance + reasoning. Avoid hedging.</li>
+      <li><strong>Schluss (1–2 sentences):</strong> Restate opinion in different words. Optional: call to action or forward-looking statement.</li>
+    </ol>
+  </div>
+
+  <h3>Correction Protocol (Self + External)</h3>
+  <table class="data-table">
+    <thead><tr><th>Step</th><th>Action</th><th>Focus</th></tr></thead>
+    <tbody>
+      <tr><td>1 — Immediate</td><td>Submit draft to C1 partner via WhatsApp/email within 2 hours</td><td>No self-correction yet — fresh eyes first</td></tr>
+      <tr><td>2 — Self-check (24h later)</td><td>Re-read your draft cold. Find errors yourself first.</td><td>Check: verb position, Kasus, gender, register consistency</td></tr>
+      <tr><td>3 — Compare</td><td>Compare your self-found errors with partner's corrections</td><td>Errors you missed → add to Grammar Error Log immediately</td></tr>
+      <tr><td>4 — Rewrite</td><td>Rewrite the SAME task incorporating all corrections</td><td>Compare version 1 vs version 2 — track improvement</td></tr>
+      <tr><td>5 — Extract phrases</td><td>Pull 3 strong phrases from the corrected version into Anki</td><td>Productive vocabulary building from your own production</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Writing Targets Per Week</h3>
+  <p>Weeks 1–2: 2 writing tasks/week. Weeks 3–4: 3 tasks/week. Weeks 5–8: 4 tasks/week minimum. All timed. No exceptions.</p>
+
+  <div class="callout callout-warning">
+    <strong>Common Arabic-speaker errors in German writing:</strong> Missing articles (Arabic has no indefinite article system), wrong Kasus after prepositions (Arabic case system differs), word order in subordinate clauses (VSO vs. SOV shift), over-formal register mixing. Target these explicitly in every correction cycle.
+  </div>
+</section>
+
+<!-- ========== SECTION 5: LISTENING + READING ========== -->
+<section id="listening">
+  <h2><span class="tag">Section 05</span>Listening + Reading Strategy</h2>
+
+  <h3>Hören — Goethe B2 Structure</h3>
+  <div class="callout callout-info">
+    <strong>3 Parts:</strong> Teil 1 — Interview (multiple choice global/detail, ~6 min audio). Teil 2 — Radiobericht or Vortrag (true/false/not mentioned, fast). Teil 3 — Discussion/debate (match speakers to statements). Each part plays ONCE only.
+  </div>
+
+  <h3>Listening Progression: 8-Week Arc</h3>
+  <table class="data-table">
+    <thead><tr><th>Weeks</th><th>Content Level</th><th>Technique</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td>1–2</td><td>Easy German (YouTube), slow news (langsam gesprochen)</td><td>Transcription drill: listen → write what you hear → compare to transcript</td><td>Builds phonemic accuracy</td></tr>
+      <tr><td>3–4</td><td>DW audio news, Deutschlandfunk Nachrichten (standard speed)</td><td>Predictive listening: read headline → predict content → listen → verify</td><td>Global comprehension + vocab in context</td></tr>
+      <tr><td>5–6</td><td>Goethe Modellsatz audio, ARD radio features</td><td>Exam simulation: answer questions without transcript</td><td>Task-type mastery</td></tr>
+      <tr><td>7–8</td><td>ZDF heute, Deutschlandfunk debates, Podcast-heavy content</td><td>Cold listening under exam pressure. No repeats.</td><td>Exam readiness</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Active Listening Techniques</h3>
+  <div class="drill-card">
+    <div class="drill-type">Technique 1</div>
+    <h4>Transcription Drill (Weeks 1–3)</h4>
+    <p>Play 60 seconds of audio. Pause. Write every word you heard in German. Compare to transcript. Circle errors. Identify: phoneme errors, word boundary errors, missed function words (articles, prepositions). This is the fastest way to fix Arabic-accented listening.</p>
+  </div>
+  <div class="drill-card">
+    <div class="drill-type">Technique 2</div>
+    <h4>Keyword Map (Weeks 3–6)</h4>
+    <p>Before listening: read the question set (30 seconds). While listening: write only keywords, not sentences. After: reconstruct full answers from keywords. Mimics exact exam strategy.</p>
+  </div>
+  <div class="drill-card">
+    <div class="drill-type">Technique 3</div>
+    <h4>Summarization in German (Weeks 4–8)</h4>
+    <p>After each listening session: write a 5-sentence summary in German from memory. No transcript. This forces active processing and doubles as writing practice. Share with C1 partner for accuracy check weekly.</p>
+  </div>
+
+  <h3 style="margin-top:2.5rem;">Lesen — Goethe B2 Structure</h3>
+  <div class="callout callout-info">
+    <strong>4 Parts:</strong> Teil 1 — Match (headlines to texts, 10 items). Teil 2 — Select information from classified ads/short texts. Teil 3 — Long text, detail comprehension (multiple choice). Teil 4 — Grammar-based text reconstruction (choose from 6 options to fill 10 gaps). Total: 75 minutes.
+  </div>
+
+  <h3>Reading Strategy Per Task Type</h3>
+  <table class="data-table">
+    <thead><tr><th>Task</th><th>Strategy</th><th>Time Budget</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Teil 1 — Match</strong></td><td>Read all headlines first. Identify 2–3 keywords per statement. Scan texts for these keywords only. Do NOT read fully.</td><td>15–18 minutes</td></tr>
+      <tr><td><strong>Teil 2 — Ads/Short texts</strong></td><td>Read all questions first. Scan ads for specific info (prices, dates, conditions). Linear elimination.</td><td>12–15 minutes</td></tr>
+      <tr><td><strong>Teil 3 — Long text</strong></td><td>Read questions first (note line/section references). Skim for structure. Read only relevant sections deeply.</td><td>25 minutes</td></tr>
+      <tr><td><strong>Teil 4 — Grammar fill</strong></td><td>Read full sentence context. Identify: Konnektoren, Präpositionen, Relativpronomen. Eliminate options that violate grammar rules. Never guess first.</td><td>15 minutes</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warning">
+    <strong>Reading Speed Target:</strong> You need 250+ words/minute at comprehension rate of 80%+ to finish Teil 3 comfortably. Measure your current WPM in Week 1. Train with 500-word articles under time pressure daily from Week 3 onward.
+  </div>
+</section>
+
+<!-- ========== SECTION 6: GRAMMAR + VOCAB ========== -->
+<section id="grammar">
+  <h2><span class="tag">Section 06</span>Grammar + Vocabulary System</h2>
+
+  <h3>High-Impact B2 Grammar Topics — Ranked by Exam Frequency</h3>
+  <table class="data-table">
+    <thead><tr><th>Priority</th><th>Topic</th><th>Resource</th><th>Week Target</th></tr></thead>
+    <tbody>
+      <tr><td><span style="color:var(--red);font-weight:700;">Critical</span></td><td>Konjunktiv II (Gegenwart + Vergangenheit + würde)</td><td>Grammatik Aktiv pp. 148–162</td><td>Week 1–2</td></tr>
+      <tr><td><span style="color:var(--red);font-weight:700;">Critical</span></td><td>Passiv (Vorgangs-, Zustands-, Passiversatz)</td><td>Grammatik Aktiv pp. 120–138</td><td>Week 1–2</td></tr>
+      <tr><td><span style="color:var(--red);font-weight:700;">Critical</span></td><td>Kausale/konzessive/finale Konnektoren</td><td>Grammatik Aktiv pp. 200–225</td><td>Week 2–3</td></tr>
+      <tr><td><span style="color:var(--orange);font-weight:700;">High</span></td><td>Indirekte Rede (Konjunktiv I)</td><td>Grammatik Aktiv pp. 164–175</td><td>Week 2–3</td></tr>
+      <tr><td><span style="color:var(--orange);font-weight:700;">High</span></td><td>Relativsätze (alle Kasus + was/wo-compounds)</td><td>Grammatik Aktiv pp. 180–195</td><td>Week 2–3</td></tr>
+      <tr><td><span style="color:var(--orange);font-weight:700;">High</span></td><td>Nomen-Verb-Verbindungen (feste Wendungen)</td><td>Wortschatz-intensive list B2</td><td>Week 3–4</td></tr>
+      <tr><td><span style="color:var(--gold);font-weight:700;">Medium</span></td><td>Modalpartikeln (doch, mal, ja, eigentlich, wohl)</td><td>Grammatik Aktiv pp. 240–255</td><td>Week 4–5</td></tr>
+      <tr><td><span style="color:var(--gold);font-weight:700;">Medium</span></td><td>Infinitivkonstruktionen (ohne zu, statt zu, um zu)</td><td>Grammatik Aktiv pp. 95–110</td><td>Week 4–5</td></tr>
+      <tr><td><span style="color:var(--green);font-weight:700;">Consolidation</span></td><td>Präpositionen mit Kasus (all two-way prepositions)</td><td>Drill sheets + Anki</td><td>Week 5–6</td></tr>
+      <tr><td><span style="color:var(--green);font-weight:700;">Consolidation</span></td><td>Genitiv (possessive + prepositions: wegen, trotz, während)</td><td>Grammatik Aktiv pp. 60–75</td><td>Week 5–6</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Daily Vocabulary System</h3>
+  <div class="drill-card">
+    <div class="drill-type">Input Phase (Days 1–3 per word set)</div>
+    <h4>Context-First Acquisition</h4>
+    <ol class="drill-steps">
+      <li>Read target word in 3 different authentic sentences (from newspapers, Goethe texts)</li>
+      <li>Identify: collocations (what verbs/adjectives go with it?), register (formal/neutral/colloquial), B2 synonyms</li>
+      <li>Create ONE Anki card: front = sentence with blank, back = word + grammar info (gender, plural, verb pattern)</li>
+      <li>NEVER enter isolated words — always sentence context</li>
+    </ol>
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Output Phase (Days 4–7)</div>
+    <h4>Active Production</h4>
+    <ol class="drill-steps">
+      <li>Write 2 sentences using the word in different contexts</li>
+      <li>Use the word in your next speaking session (conscious activation)</li>
+      <li>When it appears in a writing task, note it — that's mastery confirmation</li>
+    </ol>
+  </div>
+
+  <h3>B2 Vocabulary Domains — Priority Order</h3>
+  <p>Focus vocabulary acquisition within these domains only. Generalist vocab expansion is low-yield for exam prep.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Gesellschaft & Soziales</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Umwelt & Nachhaltigkeit</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Digitalisierung & Technik</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Arbeit & Wirtschaft</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Bildung & Wissenschaft</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Gesundheit & Medizin</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Globalisierung & Politik</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Medien & Kommunikation</span>
+    <span style="background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:5px 14px;font-size:13px;color:var(--text2);">Familie & Gesellschaft</span>
+  </div>
+
+  <h3>Grammar Error Log — Template</h3>
+  <div class="callout callout-success">
+    <strong>Keep this log in a physical notebook or Google Sheet.</strong> Every error you make in writing, speaking, or grammar exercises gets logged here. Format: Date | Error | Correct Form | Rule | Example Sentence. Review every Friday. Pattern analysis monthly. This is your most valuable learning document.
+  </div>
+</section>
+
+<!-- ========== SECTION 7: RESOURCES ========== -->
+<section id="resources">
+  <h2><span class="tag">Section 07</span>Resource Stack — Minimal, High-Impact Only</h2>
+  <p>You already have core resources. Fill gaps only. Every resource must justify its time cost.</p>
+
+  <div class="resource-grid">
+    <div class="resource-card">
+      <div class="rc-type core">Core Textbook — ADD</div>
+      <h4>Fit fürs Goethe-Zertifikat B2</h4>
+      <p>Hueber Verlag. The single most exam-aligned preparation book. Contains authentic Goethe tasks, model answers, and skill-specific drills. Replace all generic B2 prep with this.</p>
+      <div class="rc-action">Use from Week 3 onward. Primary source for all mock tasks.</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type grammar">Grammar — YOU HAVE IT</div>
+      <h4>Grammatik Aktiv B1–B2</h4>
+      <p>Cornelsen. Your current resource. High-impact. Use the B2 section exclusively from Week 2. Do not redo B1 chapters unless your Error Log shows a B1 gap.</p>
+      <div class="rc-action">Active use: targeted chapters only. Not cover-to-cover.</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type speaking">Speaking — ADD</div>
+      <h4>Tandem / HelloTalk App</h4>
+      <p>For additional speaking practice on non-partner days. Find a native German speaker learning Arabic for mutual exchange. Minimum 20 minutes structured German speaking per session.</p>
+      <div class="rc-action">Use on days without C1 partner. Structured tasks only.</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type speaking">Speaking Correction — ADD</div>
+      <h4>italki (Professional Tutor)</h4>
+      <p>Book 1–2 sessions with a certified Goethe exam tutor. Use for B2 Sprechen mock exam simulation. The external perspective from an examiner-trained tutor is irreplaceable.</p>
+      <div class="rc-action">Schedule for Week 5 and Week 7. Not for regular lessons.</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type listening">Listening — ADD</div>
+      <h4>Deutschlandfunk Audiothek</h4>
+      <p>Free. Native speed. Wide range of topics aligned with B2 exam domains. "Nachrichten" for dense input, "Hintergrund" features for comprehension training.</p>
+      <div class="rc-action">Daily from Week 3. Replace Easy German as primary after Week 4.</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type listening">You Have It — Optimize</div>
+      <h4>Easy German (YouTube)</h4>
+      <p>Strong for Weeks 1–3. Use with subtitles off from Week 2. Use transcription drill (not passive watching). Phase out as primary resource by Week 5.</p>
+      <div class="rc-action">Weeks 1–4 only. Active technique, not background watching.</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type vocab">Vocabulary — ADD</div>
+      <h4>Anki + B2 Wortliste Deck</h4>
+      <p>Use the publicly available "Goethe B2 Wortschatz" Anki deck as a starting point. Heavily edit it: add sentence context to every card. Delete isolated word cards.</p>
+      <div class="rc-action">30 new cards/day Weeks 1–4. 15/day Weeks 5–8 (consolidation).</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type exam">Exam Material — ADD</div>
+      <h4>Goethe Modellsätze B2 (Official)</h4>
+      <p>Download all available Modellsätze from goethe.de — they are free. These are the ONLY authentic exam simulations. Do not use third-party "mock exams" as primary simulation material.</p>
+      <div class="rc-action">goethe.de → Prüfungen → B2 → Übungsmaterial</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rc-type grammar">Drop or Deprioritize</div>
+      <h4>Menschen + Themen Aktuell</h4>
+      <p>These are excellent B1 resources but insufficiently exam-oriented for your goal. Do not continue cover-to-cover. Mine them only for specific grammar explanations where Grammatik Aktiv is unclear.</p>
+      <div class="rc-action">Reference only from Week 3 onward. Not primary resources.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SECTION 8: MOCK EXAM ========== -->
+<section id="mock">
+  <h2><span class="tag">Section 08</span>Mock Exam Strategy</h2>
+
+  <h3>Mock Exam Schedule</h3>
+  <table class="data-table">
+    <thead><tr><th>Mock</th><th>Timing</th><th>Scope</th><th>Primary Goal</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mock 0</strong></td><td>Day 1, Week 1</td><td>Full exam (Goethe Modellsatz 1)</td><td>Establish baseline scores. No pressure. Diagnose.</td></tr>
+      <tr><td><strong>Mock 1</strong></td><td>Week 3 (Day 4)</td><td>Lesen + Hören only</td><td>Test exam strategy implementation. Time management.</td></tr>
+      <tr><td><strong>Mock 2</strong></td><td>Week 5 (Day 1)</td><td>Full 4-skill exam</td><td>First real-conditions simulation. Identify major gaps.</td></tr>
+      <tr><td><strong>Mock 3</strong></td><td>Week 6 (Day 5)</td><td>Schreiben + Sprechen only</td><td>Targeted drill on production skills.</td></tr>
+      <tr><td><strong>Mock 4</strong></td><td>Week 7 (Day 1)</td><td>Full 4-skill exam</td><td>Measure progress from Mock 2. Confirm readiness.</td></tr>
+      <tr><td><strong>Mock 5</strong></td><td>Week 7 (Day 5)</td><td>Full 4-skill exam</td><td>High-pressure simulation. Treat as real exam.</td></tr>
+      <tr><td><strong>Mock 6</strong></td><td>Week 8 (Day 1)</td><td>Full 4-skill exam</td><td>Final benchmark. After this: repair only.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Deep Error Analysis Protocol — Run After Every Mock</h3>
+  <div class="callout callout-critical">
+    <strong>2 hours minimum after every mock. Non-negotiable.</strong> The mock itself is not the learning event — the analysis is.
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Phase 1 — Scoring (30 min)</div>
+    <h4>Objective Measurement</h4>
+    <ol class="drill-steps">
+      <li>Score Lesen and Hören using answer key. Calculate % per task type.</li>
+      <li>For Schreiben: self-score using B2 rubric (Inhalt, Kommunikative Gestaltung, Formale Richtigkeit). Then send to C1 partner for independent scoring.</li>
+      <li>For Sprechen: review recording with rubric. Rate each dimension 1–5.</li>
+      <li>Record all scores in the Performance Tracking Sheet (see Section 9).</li>
+    </ol>
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Phase 2 — Error Classification (45 min)</div>
+    <h4>Categorize, Don't Just Correct</h4>
+    <ol class="drill-steps">
+      <li>For each wrong answer: determine WHY. Category 1: Grammar gap. Category 2: Vocabulary gap. Category 3: Strategy failure (read wrong, ran out of time). Category 4: Comprehension failure (didn't understand the audio/text).</li>
+      <li>Count errors per category. The category with most errors = next week's focus.</li>
+      <li>For Schreiben errors: categorize as: word order, article/Kasus, connector misuse, register error, incomplete task point.</li>
+      <li>Add all grammar errors to Grammar Error Log.</li>
+    </ol>
+  </div>
+
+  <div class="drill-card">
+    <div class="drill-type">Phase 3 — Targeted Repair (45 min)</div>
+    <h4>Immediate Targeted Drilling</h4>
+    <ol class="drill-steps">
+      <li>Take your top 3 error categories from Phase 2.</li>
+      <li>Do exactly 10 targeted exercises per category — same format as the exam.</li>
+      <li>For speaking errors: immediately redo the exact Sprechen topic you struggled with.</li>
+      <li>For writing: rewrite the full task incorporating all corrections.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ========== SECTION 9: TRACKING ========== -->
+<section id="tracking">
+  <h2><span class="tag">Section 09</span>Performance Tracking System</h2>
+
+  <h3>Weekly Checkpoint Metrics</h3>
+  <div class="checkpoint-row">
+    <div class="checkpoint-item"><div class="ci-label">Lesen Score</div><div class="ci-metric">≥75%</div><div class="ci-target">B2 readiness threshold</div></div>
+    <div class="checkpoint-item"><div class="ci-label">Hören Score</div><div class="ci-metric">≥70%</div><div class="ci-target">B2 readiness threshold</div></div>
+    <div class="checkpoint-item"><div class="ci-label">Schreiben</div><div class="ci-metric">≥3/5</div><div class="ci-target">All 3 rubric dimensions</div></div>
+    <div class="checkpoint-item"><div class="ci-label">Sprechen</div><div class="ci-metric">≥3/5</div><div class="ci-target">All 5 rubric dimensions</div></div>
+  </div>
+  <div class="checkpoint-row">
+    <div class="checkpoint-item"><div class="ci-label">Daily Vocab</div><div class="ci-metric">30/day</div><div class="ci-target">New cards Weeks 1–4</div></div>
+    <div class="checkpoint-item"><div class="ci-label">Speaking Time</div><div class="ci-metric">90 min/day</div><div class="ci-target">Minimum daily target</div></div>
+    <div class="checkpoint-item"><div class="ci-label">Anki Reviews</div><div class="ci-metric">0 overdue</div><div class="ci-target">No card left behind</div></div>
+    <div class="checkpoint-item"><div class="ci-label">Grammar Log</div><div class="ci-metric">&lt;3 repeat</div><div class="ci-target">Same error max 3× total</div></div>
+  </div>
+
+  <h3>B2 Readiness Indicators</h3>
+  <div class="callout callout-success">
+    <strong>You are exam-ready when ALL of the following are true:</strong>
+    Two consecutive full mocks with Lesen ≥75%, Hören ≥70%, Schreiben ≥60/100 (Goethe scale), Sprechen ≥60/100. Grammar Error Log shows no new error types for 2 weeks. Cold-start speaking produces 3-minute coherent monologue without preparation. Formal email written in under 25 minutes, error-free on structure. Timed Lesen completed in under 70 minutes.
+  </div>
+
+  <h3>Error Tracking Framework</h3>
+  <div class="error-matrix">
+    <div class="error-cell">
+      <h5>Grammar Errors — Track These</h5>
+      <ul>
+        <li>Konjunktiv II formation mistakes</li>
+        <li>Kasus after prepositions</li>
+        <li>Verb position in Nebensatz</li>
+        <li>Passiv construction errors</li>
+        <li>Adjective declension gaps</li>
+        <li>Konjunktiv I (reported speech)</li>
+      </ul>
+    </div>
+    <div class="error-cell">
+      <h5>Speaking Errors — Track These</h5>
+      <ul>
+        <li>Filler words in Arabic (switch cost)</li>
+        <li>Incomplete sentences under pressure</li>
+        <li>Missing Redemittel (direct opinion)</li>
+        <li>Pronunciation: ü/ö/ch sounds</li>
+        <li>Response time &gt;3 seconds on questions</li>
+        <li>Failing to address all task points</li>
+      </ul>
+    </div>
+    <div class="error-cell">
+      <h5>Writing Errors — Track These</h5>
+      <ul>
+        <li>Wrong article/gender</li>
+        <li>Register mixing (du/Sie)</li>
+        <li>Missing task points (Inhalt)</li>
+        <li>Connector overuse / wrong connector</li>
+        <li>Word order in subordinate clauses</li>
+        <li>Spelling: ss/ß, compound nouns</li>
+      </ul>
+    </div>
+    <div class="error-cell">
+      <h5>Comprehension Errors — Track These</h5>
+      <ul>
+        <li>Nicht/kein negation misreads</li>
+        <li>Fast audio sections missed</li>
+        <li>Nicht erwähnt vs. falsch confusion</li>
+        <li>Inference questions (Lesen Teil 3)</li>
+        <li>Connector-based meaning shifts</li>
+        <li>Register differences in reading texts</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Phase-End Benchmarks</h3>
+  <table class="data-table">
+    <thead><tr><th>End of</th><th>Lesen</th><th>Hören</th><th>Schreiben</th><th>Sprechen</th><th>Gate Decision</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Week 2</strong></td><td>≥55%</td><td>≥55%</td><td>3/5 rubric</td><td>Monologue &gt;3 min</td><td>Continue if met. Extend grammar if not.</td></tr>
+      <tr><td><strong>Week 4</strong></td><td>≥65%</td><td>≥62%</td><td>3.5/5 rubric</td><td>Argumentation flows</td><td>If Schreiben &lt;3: add 1 extra task/day.</td></tr>
+      <tr><td><strong>Week 6</strong></td><td>≥72%</td><td>≥68%</td><td>4/5 rubric</td><td>Cold start 2 min OK</td><td>If any below: replace weakest non-exam activity.</td></tr>
+      <tr><td><strong>Week 8</strong></td><td>≥78%</td><td>≥73%</td><td>4.5/5</td><td>4/5 all dimensions</td><td>Exam-ready. Execute.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warning">
+    <strong>If you fall behind a phase benchmark:</strong> Do NOT continue to next phase. Add 1–2 days of intensive targeted repair before moving on. Falling behind in the early phases creates compounding deficits in Weeks 5–8 that cannot be recovered in simulation mode.
+  </div>
+</section>
+
+<footer>
+  <p>Goethe-Zertifikat B2 — Elite Preparation System · Designed for A2/B1 → Strong B2 in 60 days</p>
+  <p style="margin-top:6px;">Exam date: set it before Day 1. Commitment precedes preparation.</p>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
