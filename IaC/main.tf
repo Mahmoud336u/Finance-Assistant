@@ -6,24 +6,42 @@ provider "aws" {
 # S3 Bucket for data lake (Iceberg)
 resource "aws_s3_bucket" "data_lake" {
   bucket = "${var.project_name}-data-lake"
-  acl    = "private"
 
-  versioning {
-    enabled = true
+  tags = {
+    Name = "${var.project_name}-data-lake"
   }
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.s3_kms_key.arn
-        sse_algorithm     = "aws:kms"
-      }
+resource "aws_s3_bucket_acl" "data_lake_acl" {
+  bucket = aws_s3_bucket.data_lake.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "data_lake_versioning" {
+  bucket = aws_s3_bucket.data_lake.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "data_lake_sse" {
+  bucket = aws_s3_bucket.data_lake.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.s3_kms_key.arn
+      sse_algorithm     = "aws:kms"
     }
   }
+}
 
-  lifecycle_rule {
-    id      = "intelligent-tiering"
-    enabled = true
+resource "aws_s3_bucket_lifecycle_configuration" "data_lake_lifecycle" {
+  bucket = aws_s3_bucket.data_lake.id
+
+  rule {
+    id     = "intelligent-tiering"
+    status = "Enabled"
 
     transition {
       storage_class = "INTELLIGENT_TIERING"
@@ -31,19 +49,33 @@ resource "aws_s3_bucket" "data_lake" {
   }
 }
 
-# Lambda function for Plaid API integration
+# Block all public access to the data lake bucket
+resource "aws_s3_bucket_public_access_block" "data_lake_public_access" {
+  bucket                  = aws_s3_bucket.data_lake.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# Lambda function for Plaid API integration (with VPC config)
 resource "aws_lambda_function" "plaid_integration" {
   filename      = "lambda-plaid.zip"
   function_name = "${var.project_name}-plaid-integration"
   role          = aws_iam_role.lambda_role.arn
   handler       = "index.handler"
-  runtime       = "python3.8"
+  runtime       = "python3.12"
 
   environment {
     variables = {
       PLAID_SECRET_ARN = aws_secretsmanager_secret.plaid_credentials.arn
       S3_BUCKET        = aws_s3_bucket.data_lake.id
     }
+  }
+
+  vpc_config {
+    subnet_ids         = aws_subnet.private[*].id
+    security_group_ids = [aws_security_group.lambda.id]
   }
 }
 
@@ -60,7 +92,7 @@ resource "aws_sagemaker_model" "finance_model" {
   execution_role_arn = aws_iam_role.lambda_role.arn
 
   primary_container {
-    image = "<YOUR_SAGEMAKER_IMAGE_URI>"
+    image          = "<YOUR_SAGEMAKER_IMAGE_URI>"
     model_data_url = "s3://${aws_s3_bucket.data_lake.id}/model/model.tar.gz"
   }
 }
@@ -77,6 +109,7 @@ resource "aws_ecs_task_definition" "model_task" {
   cpu                      = "1024"
   memory                   = "2048"
   execution_role_arn       = aws_iam_role.ecs_task_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([{
     name  = "model-container",
@@ -105,43 +138,19 @@ resource "aws_cognito_user_pool" "users" {
   name = "${var.project_name}-user-pool"
 }
 
-# ElastiCache Redis for caching
+# ElastiCache Redis for caching (inside VPC with subnet group)
+resource "aws_elasticache_subnet_group" "redis" {
+  name       = "${var.project_name}-redis-subnet-group"
+  subnet_ids = aws_subnet.private[*].id
+}
+
 resource "aws_elasticache_cluster" "prediction_cache" {
   cluster_id           = "${var.project_name}-redis"
   engine               = "redis"
   node_type            = "cache.t3.micro"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis6.x"
-}
-
-resource "aws_lambda_function" "plaid_integration" {
-  # ... existing config ...
-  vpc_config {
-    subnet_ids         = aws_subnet.private[*].id
-    security_group_ids = [aws_security_group.lambda.id]
-  }
-}
-
-resource "aws_ecs_task_definition" "model_task" {
-  # ... existing config ...
-  network_mode = "awsvpc"
-  task_role_arn = aws_iam_role.ecs_task_role.arn
-  
-  # Add this block
-  vpc {
-    subnets          = aws_subnet.private[*].id
-    security_groups  = [aws_security_group.ecs.id]
-  }
-}
-
-resource "aws_elasticache_cluster" "prediction_cache" {
-  # ... existing config ...
-  subnet_group_name  = aws_elasticache_subnet_group.redis.name
-  security_group_ids = [aws_security_group.redis.id]
-}
-
-resource "aws_elasticache_subnet_group" "redis" {
-  name       = "${var.project_name}-redis-subnet-group"
-  subnet_ids = aws_subnet.private[*].id
+  subnet_group_name    = aws_elasticache_subnet_group.redis.name
+  security_group_ids   = [aws_security_group.redis.id]
 }
 

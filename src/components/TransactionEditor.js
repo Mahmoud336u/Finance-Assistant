@@ -3,23 +3,29 @@ import { TextField, Button, Select, MenuItem, FormControl, InputLabel } from '@m
 import { getCategories } from '../services/api';
 
 function TransactionEditor({ transaction, onSave, onCancel }) {
-  const [description, setDescription] = useState(transaction.description);
-  const [amount, setAmount] = useState(transaction.amount);
-  const [date, setDate] = useState(transaction.date);
-  const [category, setCategory] = useState(transaction.category);
+  const [description, setDescription] = useState(transaction?.description ?? '');
+  const [amount, setAmount] = useState(transaction?.amount ?? '');
+  const [date, setDate] = useState(transaction?.date ?? '');
+  const [category, setCategory] = useState(transaction?.category ?? '');
   const [categories, setCategories] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
         setCategories(data);
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
+      } catch (err) {
+        setError('Failed to load categories. Please try again.');
+        console.error('Failed to fetch categories:', err);
       }
     };
     fetchCategories();
   }, []);
+
+  if (!transaction) {
+    return null;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,6 +35,7 @@ function TransactionEditor({ transaction, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit}>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <TextField
         label="Description"
         value={description}
