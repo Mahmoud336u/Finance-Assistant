@@ -1,5 +1,5 @@
 # Core AWS SDK
-boto3==1.28.57
+boto3>=1.42.2,<2.0.0
 awscli==1.29.57
 
 # Plaid API Integration
