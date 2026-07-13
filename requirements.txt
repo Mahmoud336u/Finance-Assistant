@@ -7,7 +7,7 @@ plaid-python==29.0.0
 requests==2.33.0
 
 # Machine Learning & SageMaker
-sagemaker==3.4.0
+sagemaker==3.8.0
 scikit-learn==1.5.0
 xgboost==1.7.5
 lightgbm==4.6.0
@@ -40,7 +40,7 @@ sqlalchemy==2.0.25
 # Additional Utilities
 smart-open==6.4.0  # For S3 file access
 tqdm==4.66.3       # Progress bars
-python-dotenv==1.0.0
+python-dotenv==1.2.2
 
 # Optional (for ONNX runtime in Lambda)
 onnxruntime==1.15.1
